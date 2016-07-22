@@ -12,6 +12,7 @@ public class Monster {
     private int attack = 20;
     private int mobility = 2;
     private int xLocation, yLocation;
+    private Boolean alive = true;
     public static int numMonsters = 0;
 
 
@@ -30,14 +31,58 @@ public class Monster {
     public int getMobility() {
         return mobility;
     }
-    public void placeMonster(int xLocation, int yLocation) {
-        if (BattleBoard.battleBoard[xLocation][yLocation] == '*') {
+    public Boolean getAlive() {
+        return alive;
+    }
+    public int getXLocation() {
+        return xLocation;
+    }
+    public int getYLocation() {
+        return yLocation;
+    }
+
+    // Returns true if successfully moves
+
+    public Boolean placeMonster(int yLocation, int xLocation) {
+        // if moving off the board, don't move the monster.
+
+        if (xLocation >= BattleBoard.boardWidth || yLocation >= BattleBoard.boardHeight) { return false; }
+        if (xLocation < 0 || yLocation < 0) { return false; }
+
+        // Only move if the board location is a valid location
+
+        if (BattleBoard.battleBoard[yLocation][xLocation] == '*') {
             this.xLocation = xLocation;
             this.yLocation = yLocation;
+            BattleBoard.battleBoard[yLocation][xLocation] = this.getName1Char();
+            return true;
         }
+        return false;
+    }
 
-        // otherwise do nothing
-
+    public void moveMonsterUp(Monster m) {
+        Boolean wasSuccessfulMove = placeMonster(m.yLocation - 1, m.xLocation);
+        if (wasSuccessfulMove) {
+            BattleBoard.battleBoard[yLocation + 1][xLocation] = '*';
+        }
+    }
+    public void moveMonsterDown(Monster m) {
+        Boolean wasSuccessfulMove = placeMonster(m.yLocation + 1, m.xLocation);
+        if (wasSuccessfulMove) {
+            BattleBoard.battleBoard[yLocation - 1][xLocation] = '*';
+        }
+    }
+    public void moveMonsterLeft(Monster m) {
+        Boolean wasSuccessfulMove = placeMonster(m.yLocation, m.xLocation - 1);
+        if (wasSuccessfulMove) {
+            BattleBoard.battleBoard[yLocation][xLocation + 1] = '*';
+        }
+    }
+    public void moveMonsterRight(Monster m) {
+        Boolean wasSuccessfulMove = placeMonster(m.yLocation, m.xLocation + 1);
+        if (wasSuccessfulMove) {
+            BattleBoard.battleBoard[yLocation][xLocation - 1] = '*';
+        }
     }
 
     public Monster(String name) {

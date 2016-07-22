@@ -1,3 +1,4 @@
+import java.util.Scanner;
 import java.util.Arrays;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -24,8 +25,10 @@ public class BattleBoard {
  * ------------------------------
 */
 
-    private static final int boardWidth = 10;
-    private static final int boardHeight = 10;
+    static final int boardWidth = 7;
+    static final int boardHeight = 7;
+    static Scanner scanner = new Scanner(System.in);
+    static String userInput;
 
     // Create the battle board 2D array
 
@@ -36,7 +39,7 @@ public class BattleBoard {
         }
     }
 
-    private static void paint() {
+    private static void repaint() {
 
         // print out the top border
 
@@ -67,12 +70,53 @@ public class BattleBoard {
         do {
            randXPosition = (int) (Math.random() * boardWidth);
            randYPosition = (int) (Math.random() * boardHeight);
-        } while (battleBoard[randXPosition][randYPosition] != '*');
+        } while (battleBoard[randYPosition][randXPosition] != '*');
 
         // place the monster on the board
 
-        monster.placeMonster(randXPosition, randYPosition);
-        battleBoard[randXPosition][randYPosition] = monster.getName1Char();
+        monster.placeMonster(randYPosition, randXPosition);
+    }
+
+    public static void issueCommand(String command, Monster[] monsterArray) {
+        if (command.equalsIgnoreCase("left")) {
+            for (Monster m : monsterArray) {
+                if(m.getAlive())
+                {
+                    m.moveMonsterLeft(m);
+                }
+            }
+        }
+        if (command.equalsIgnoreCase("up")) {
+            for (Monster m : monsterArray) {
+                if(m.getAlive())
+                {
+                    m.moveMonsterUp(m);
+                }
+            }
+        }
+        if (command.equalsIgnoreCase("right")) {
+            for (Monster m : monsterArray) {
+                if(m.getAlive())
+                {
+                    m.moveMonsterRight(m);
+                }
+            }
+        }
+        if (command.equalsIgnoreCase("down")) {
+            for (Monster m : monsterArray) {
+                if(m.getAlive())
+                {
+                    m.moveMonsterDown(m);
+                }
+            }
+        }
+        if (command.equalsIgnoreCase("print locations")) {
+            for (Monster m : monsterArray) {
+                System.out.println(m.getName() + " - X location is " + m.getXLocation() + " and Y location is " +
+            m.getYLocation());
+            }
+        }
+        repaint();
     }
 
     public static void main(String[] args) {
@@ -85,6 +129,24 @@ public class BattleBoard {
         for (int i = 0; i < 4; i++) {
             dropMonsterOnBoardInRandomOpenPosition(monsterArray[i]);
         }
-        paint();
+        repaint();
+
+        // allow the monsters to move
+
+        while (true) {
+            System.out.println("Issue a command, your choices are:");
+            System.out.println("up");
+            System.out.println("right");
+            System.out.println("left");
+            System.out.println("down");
+            System.out.println("exit");
+            System.out.println("print locations");
+            userInput = scanner.nextLine();
+            if (userInput.equalsIgnoreCase(("exit"))) {
+                break;
+            }
+            issueCommand(userInput, monsterArray);
+        }
+
     }
 }
